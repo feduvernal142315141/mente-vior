@@ -1,0 +1,344 @@
+/* -----------------------------------------
+   Imports principales
+----------------------------------------- */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Permite variantes tipo dark usando .dark */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================================
+   1) PALETA BASE – MenteVior Back Office (Colores corporativos principales)
+   Estos colores representan el diseño industrial frío corporativo.
+   ============================================================================
+*/
+:root {
+  /* Fondos y superficies */
+  --bg-soft: #f4f5f7;                 /* Fondo suave gris corporativo */
+  --surface-primary: #ffffff;         /* Tarjetas y paneles */
+  --surface-secondary: #fafafa;       /* Capas secundarias */
+
+  /* Bordes */
+  --border-hairline: #e1e4e8;         /* Líneas muy delgadas */
+  --border-divider: #d5d7da;          /* Divisores más visibles */
+
+  /* Tipografía */
+  --text-primary: #1a1d21;            /* Texto principal */
+  --text-secondary: #4d5358;          /* Texto secundario */
+  --text-muted: #6b727a;              /* Texto suave */
+  --text-disabled: #9ea3aa;           /* Estados deshabilitados */
+
+  /* Azul corporativo */
+  --accent-primary: #1e3a8a;          /* Azul corporativo */
+  --accent-hover: #1d4ed8;            /* Hover */
+  --accent-soft: #e8edff;             /* Fondo suave para badges o estados */
+  --accent-focus: rgba(30, 58, 138, 0.3);
+
+  /* Estados */
+  --status-success: #059669;
+  --status-warning: #f59e0b;
+  --status-danger: #dc2626;
+  --status-info: #3b82f6;
+
+  /* Color característico */
+  --graphite-blue: #2b2f36;
+
+  /* Sombras premium (sutiles para uso corporativo) */
+  --shadow-technical: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-elevated: 0 4px 6px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.02);
+
+  /* ============================================================================
+     Tokens compatibles con Shadcn (mapear a la paleta de arriba)
+     ============================================================================
+  */
+  --background: var(--surface-primary);
+  --foreground: var(--text-primary);
+  --card: var(--surface-primary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface-primary);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-secondary);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--surface-secondary);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--accent-soft);
+  --accent-foreground: var(--accent-primary);
+  --destructive: var(--status-danger);
+  --destructive-foreground: #ffffff;
+
+  --border: var(--border-divider);
+  --input: var(--border-hairline);
+  --ring: var(--accent-focus);
+
+  --radius: 0.625rem;
+}
+
+/* ============================================================================
+   2) MODO OSCURO – Diseño técnico industrial
+============================================================================ */
+.dark {
+  --bg-soft: #020617;              
+  --surface-primary: #0b1120;      
+  --surface-secondary: #020617;    
+
+  --text-primary: #e5e7eb;         
+  --text-secondary: #cbd5f5;       
+  --text-muted: #94a3b8;          
+  --text-disabled: #64748b;        
+
+  --border-hairline: #1f2937;
+  --border-divider: #111827;
+
+  --accent-primary: #60a5fa;       
+  --accent-hover: #93c5fd;
+  --accent-soft: #1e293b;       
+
+  --status-success: #22c55e;
+  --status-warning: #eab308;
+  --status-danger: #f97373;
+  --status-info: #38bdf8;
+
+  --background: var(--surface-primary);
+  --foreground: var(--text-primary);
+
+  --card: #020617;
+  --card-foreground: var(--text-primary);
+
+  --popover: #020617;
+  --popover-foreground: var(--text-primary);
+
+  --primary: var(--accent-primary);
+  --primary-foreground: #ffffff;
+
+  --secondary: #020617;
+  --secondary-foreground: var(--text-primary);
+
+  --muted: #020617;
+  --muted-foreground: #94a3b8;
+
+  --accent: var(--accent-soft);
+  --accent-foreground: var(--text-primary);
+
+  --destructive: var(--status-danger);
+  --destructive-foreground: #ffffff;
+
+  --border: var(--border-hairline);
+  --input: var(--border-hairline);
+  --ring: rgba(148, 163, 184, 0.45);
+}
+
+/* ============================================================================
+   3) THEME INLINE – Exposición de variables para Tailwind (mapas claros)
+============================================================================ */
+@theme inline {
+  /* ============================================
+     Variables Shadcn/UI (requeridas para componentes)
+     ============================================ */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Backgrounds personalizados */
+  --color-surface-primary: var(--surface-primary);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-bg-soft: var(--bg-soft);
+
+  /* Borders */
+  --color-border-hairline: var(--border-hairline);
+  --color-border-divider: var(--border-divider);
+
+  /* Tipografía */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+
+  /* Accents */
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+
+  /* Estados */
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+  --color-status-info: var(--status-info);
+  
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+
+
+
+/* ============================================================================
+   4) BASE GLOBAL – Reseteo premium
+============================================================================ */
+@layer base {
+  body {
+    @apply bg-bg-soft text-text-primary antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    letter-spacing: -0.011em;
+  }
+
+  /* Scrollbar minimalista empresarial */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-text-muted/20 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-muted/30;
+  }
+}
+
+/* ============================================================================
+   5) UTILIDADES PREMIUM PERSONALIZADAS
+============================================================================ */
+@layer utilities {
+  /* Sombras técnicas */
+  .elevation-card {
+   box-shadow: var(--shadow-card);
+  }
+  .elevation-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  /* Animaciones rápidas para interfaz enterprise */
+  .animate-fade-in-fast {
+    animation: fadeInFast 0.12s ease-out;
+  }
+  .animate-slide-in-fast {
+    animation: slideInFast 0.1s ease-out;
+  }
+  .animate-scale-in-fast {
+    animation: scaleInFast 0.12s ease-out;
+  }
+
+  @keyframes fadeInFast {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideInFast {
+    from { transform: translateY(-4px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes scaleInFast {
+    from { transform: scale(0.97); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Anillo de enfoque premium (accesible y corporativo) */
+  .focus-ring-executive {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/30;
+  }
+}
+
+@layer base {
+
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--surface-primary) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    border: 1px solid var(--border-hairline) !important;
+    transition: background-color 9999s ease-in-out 0s !important;
+  }
+
+  .dark input:-webkit-autofill,
+  .dark textarea:-webkit-autofill,
+  .dark select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #0F162A inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    border: 1px solid var(--border-hairline) !important;
+  }
+
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--surface-primary) inset !important;
+  }
+
+  .dark input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0 1000px #0F162A inset !important;
+  }
+
+  .login-input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.07) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    caret-color: #ffffff !important;
+  }
+
+  .dark .login-input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px rgba(15, 22, 42, 0.95) inset !important;
+    -webkit-text-fill-color: #e5e7eb !important;
+    border: 1px solid rgba(148, 163, 184, 0.5) !important;
+    caret-color: #e5e7eb !important;
+  }
+
+  .login-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.07) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border: 1px solid #2563EB !important;
+  }
+
+  .dark .login-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px rgba(15, 22, 42, 0.95) inset !important;
+    -webkit-text-fill-color: #e5e7eb !important;
+    border: 1px solid #60a5fa !important;
+  }
+}
+
+
+
+@layer utilities {
+  .animate-enterprise-scale {
+    animation: enterpriseScale 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes enterpriseScale {
+    0% {
+      opacity: 0;
+      transform: translateY(6px) scale(0.96);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield !important;
+}
