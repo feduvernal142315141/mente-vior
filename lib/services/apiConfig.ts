@@ -101,7 +101,9 @@ apiInstance.interceptors.response.use(
 
                 case 401:
                     // Solo mostrar el AlertDialog, no el toast (evita notificación duplicada)
-                    interceptorHandlers.onUnauthorized?.()
+                    if (!error.request.responseURL.includes('auth/login')) {
+                        interceptorHandlers.onUnauthorized?.()
+                    }
                     console.error('Error 401 - Unauthorized:', data)
                     break
 
@@ -123,9 +125,6 @@ apiInstance.interceptors.response.use(
                     break
 
                 case 422:
-                    const message422 = data?.message || 'Validation error. Please verify the submitted data.'
-
-                    interceptorHandlers.onNotification?.(message422, 'error')
 
                     console.error('Error 422 - Validation Error:', data)
                     break

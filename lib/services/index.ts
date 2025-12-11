@@ -8,13 +8,6 @@ export { serviceGet, servicePost, servicePut, serviceDelete, serviceDownloadBlob
 // Instancia de Axios y configuración de interceptores
 export { default as apiInstance, setInterceptorHandlers } from './apiConfig'
 
-// Configuraciones predefinidas de interceptores
-export {
-  setupInterceptorsBasic,
-  setupInterceptorsWithAlertContext,
-  setupInterceptorsWithLoading,
-  setupInterceptorsHybrid,
-} from './interceptors-setup'
 
 // Types
 export type { ResponseEntity, ServiceResponse } from '../models/response'
