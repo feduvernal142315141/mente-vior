@@ -42,7 +42,7 @@ export function OrganizationListTable({
                         <img
                             src={
                                 org.logo
-                                    ? `data:image/png;base64,${org.logo}`
+                                    ? org.logo
                                     : "/placeholder.svg"
                             }
                             alt={org.legalName}
