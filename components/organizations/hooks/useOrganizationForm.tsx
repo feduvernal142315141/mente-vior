@@ -103,35 +103,37 @@ export function useCompanyForm() {
           await loadStatesByCountry(org.countryId);
         }
 
-        setFormInitialValues({
-          legalName: org.legalName,
-          agencyEmail: org.agencyEmail,
-          phoneNumber: org.phoneNumber,
-          fax: org.fax,
-          webSite: org.webSite ?? "",
-          ein: org.ein,
-          npi: org.npi,
-          mpi: org.mpi,
-          taxonomyCode: org.taxonomyCode,
-          logo: org.logo ? `data:image/png;base64,${org.logo}` : "",
+        const data = {
+            legalName: org.legalName,
+            agencyEmail: org.agencyEmail,
+            phoneNumber: org.phoneNumber,
+            fax: org.fax,
+            webSite: org.webSite ?? "",
+            ein: org.ein,
+            npi: org.npi,
+            mpi: org.mpi,
+            taxonomyCode: org.taxonomyCode,
+            logo: org.logo ? org.logo : "",
 
-          country: org.countryId,
-          stateId: org.stateId,
-          city: org.city,
-          address: org.address ?? "",
+            country: org.countryId,
+            stateId: org.stateId,
+            city: org.city,
+            address: org.address ?? "",
 
-          status: org.active,
-          language: "en",
-          active: org.active,
+            status: org.active,
+            language: "en",
+            active: org.active,
 
-          userCompany: {
-            id: org.userCompany.id,
-            firstName: org.userCompany.firstName,
-            lastName: org.userCompany.lastName,
-            email: org.userCompany.email,
-            phoneNumber: org.userCompany.phoneNumber,
-          },
-        });
+            userCompany: {
+                id: org.userCompany.id,
+                firstName: org.userCompany.firstName,
+                lastName: org.userCompany.lastName,
+                email: org.userCompany.email,
+                phoneNumber: org.userCompany.phoneNumber,
+            },
+        }
+
+        setFormInitialValues(data);
       } catch (e) {
         console.error("Error loading company:", e);
         showError("Error", "Failed to load organization data.");

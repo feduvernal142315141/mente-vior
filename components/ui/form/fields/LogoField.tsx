@@ -22,7 +22,7 @@ export function LogoField({ field, error }: LogoFieldProps) {
   const [localError, setLocalError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof fieldValue === "string" && fieldValue.startsWith("data:image")) {
+    if (typeof fieldValue === "string" && (fieldValue.startsWith("data:image") || fieldValue.startsWith("https"))) {
       setPreview(fieldValue);
       clearErrors(field.name);
     }
@@ -104,7 +104,7 @@ export function LogoField({ field, error }: LogoFieldProps) {
       ) : (
         <div className="space-y-3">
           <div className="relative w-full h-44 rounded-xl overflow-hidden border bg-surface-secondary shadow-sm">
-            <img src={preview} className="w-full h-full object-contain p-4" />
+            <img src={preview} className="w-full h-full object-contain p-4"  alt={"logo"}/>
 
             <button
               type="button"
