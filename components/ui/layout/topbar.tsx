@@ -175,7 +175,7 @@ export function Topbar({ title, breadcrumbs, actions }: TopbarProps) {
               <DropdownMenuLabel>
                 <div className="flex flex-col space-y-0.5">
                   <p className="text-[13px] font-semibold text-text-primary">
-                    {user?.name || "System Admin"}
+                    {user?.name}
                   </p>
                   <p className="text-[12px] text-text-muted">
                     {user?.email || "admin@mentevior.com"}
