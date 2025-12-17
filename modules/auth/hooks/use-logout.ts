@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/hooks/use-auth"
 
 export function useLogout() {
-  const router = useRouter()
+
   const { logout: authLogout } = useAuth()
 
   const logout = async () => {
@@ -17,9 +17,9 @@ export function useLogout() {
       console.error("Logout API error:", error)
     }
 
+    
     authLogout()
 
-    router.replace("/login")
   }
 
   return { logout }

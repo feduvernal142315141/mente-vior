@@ -153,12 +153,12 @@ export function Topbar({ title, breadcrumbs, actions }: TopbarProps) {
                   "
                 >
                   <span className="text-[11px] font-semibold text-accent-primary">
-                    {user?.name?.split(" ").map(n => n[0]).join("").toUpperCase() || "SA"}
+                    {user?.name?.split(" ").map(n => n[0]).join("").toUpperCase()}
                   </span>
                 </div>
 
                 <span className="text-[13px] font-medium text-text-primary hidden sm:inline truncate max-w-[140px]">
-                  {user?.name || "System Admin"}
+                  {user?.name}
                 </span>
               </button>
             </DropdownMenuTrigger>

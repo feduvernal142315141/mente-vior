@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode";
 import { serviceLoginManagerUserAuth, serviceRefreshToken } from "../services/login/login";
 import { encryptRsa } from "../utils/encrypt";
 import { useRefreshTokenWorker } from "./use-refresh-token-worker";
+import { useRouter } from "next/navigation";
 
 interface AuthUser {
   id: string;
@@ -156,12 +157,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const router = useRouter()
+
   /**
    * Realiza el logout
    */
   const logout = useCallback(() => {
+    router.replace("/login")
     localStorage.removeItem("mv-auth");
-    setUser(null);
+    
     setTokenState({
       accessToken: null,
       accessTokenExpiresAt: 0,
@@ -172,6 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Limpiar cookie del servidor
     fetch("/api/auth/logout", { method: "POST" }).catch(console.error);
+    
   }, []);
 
   /**
