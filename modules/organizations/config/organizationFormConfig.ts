@@ -28,6 +28,7 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
             stateId: "",
             city: "",
             address: "",
+            zipCode: "",
             userCompany: {
                 firstName: "",
                 lastName: "",
@@ -80,6 +81,7 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
                     { name: "country", label: "Country", type: "select", required: true, optionsKey: "COUNTRIES" },
                     { name: "stateId", label: "State", type: "select", optionsKey: "STATES", required: true },
                     { name: "city", label: "City", type: "text", required: true },
+                    { name: "zipCode", label: "ZIP Code", type: "text", required: true },
                 ],
             },
             {
@@ -110,6 +112,7 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
                 side: "right",
                 columns: 1,
                 fields: [
+                    { name: "zipCode", label: "ZIP Code", type: "text", required: true },
                     { name: "status", label: "Status", type: "switch", visible: showStatus },
                     { name: "language", label: "Language", type: "select", options: [
                             { label: "English (US)", value: "en" }

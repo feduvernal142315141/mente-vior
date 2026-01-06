@@ -15,6 +15,7 @@ export interface RequestCreateCompany {
   stateId: string;
   city: string;
   address: string;
+  zipCode: string;
 
   userCompany: {
     firstName: string;
@@ -42,6 +43,7 @@ export interface Organization {
   logo: string;
   city: string;
   address: string;
+  zipCode: string;
   countryId: string;
   stateId: string;
   active: boolean;

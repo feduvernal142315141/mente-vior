@@ -41,6 +41,10 @@ export const organizationCreateSchema = z.object({
   stateId: z.string().min(1, "State is required"),
   city: z.string().min(1),
   address: z.string().min(1, "Address is required"),
+  zipCode: z
+    .string()
+    .min(1, "ZIP Code is required")
+    .regex(/^\d{5}$/, "ZIP Code must be exactly 5 digits"),
 
   status: z.boolean().default(true),
   language: z.string().default("en"),

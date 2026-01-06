@@ -97,6 +97,9 @@ export function useCompanyForm() {
         const resp = await serviceGetCompanyById(companyId!);
         const org = resp?.data;
 
+        console.log("🔍 Organization data from backend:", org);
+        console.log("🔍 UserCompany data:", org?.userCompany);
+
         if (!org) return;
 
         if (org.countryId) {
@@ -119,17 +122,18 @@ export function useCompanyForm() {
             stateId: org.stateId,
             city: org.city,
             address: org.address ?? "",
+            zipCode: org.zipCode ?? "",
 
             status: org.active,
             language: "en",
             active: org.active,
 
             userCompany: {
-                id: org.userCompany.id,
-                firstName: org.userCompany.firstName,
-                lastName: org.userCompany.lastName,
-                email: org.userCompany.email,
-                phoneNumber: org.userCompany.phoneNumber,
+                id: org.userCompany?.id ?? "",
+                firstName: org.userCompany?.firstName ?? "",
+                lastName: org.userCompany?.lastName ?? "",
+                email: org.userCompany?.email ?? "",
+                phoneNumber: org.userCompany?.phoneNumber ?? "",
             },
         }
 
@@ -165,6 +169,7 @@ export function useCompanyForm() {
           stateId: data.stateId,
           city: data.city,
           address: data.address ?? "",
+          zipCode: data.zipCode || "",
           userCompany: data.userCompany,
           active: data.status ?? false,
         };

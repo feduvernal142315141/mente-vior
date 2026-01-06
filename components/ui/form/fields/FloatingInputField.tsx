@@ -19,6 +19,7 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
   const numericLikeFields = ["phoneNumber", "fax", "ein", "npi", "mpi", "userCompany.phoneNumber" ];
   const alphanumericFields = ["taxonomyCode"];
   const nameFields = ["userCompany.firstName", "userCompany.lastName"];
+  const zipCodeFields = ["zipCode"]; // Only digits, exactly 5
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Allow copy/paste shortcuts (Ctrl+C, Ctrl+V, Cmd+C, Cmd+V, Ctrl+A, Cmd+A, Ctrl+X, Cmd+X)
@@ -27,6 +28,15 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
     const allowedSystemKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Home", "End"];
 
     if (allowedSystemKeys.includes(e.key)) return;
+
+    // Validation for ZIP Code - only digits
+    if (zipCodeFields.includes(field.name)) {
+      const allowedRegex = /^[0-9]$/;
+      if (!allowedRegex.test(e.key)) {
+        e.preventDefault();
+      }
+      return;
+    }
 
     // Validation for numeric-like fields (phone, fax, ein, npi, mpi)
     if (numericLikeFields.includes(field.name)) {
@@ -60,8 +70,15 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
     const currentValue = e.target.value;
     let cleanedValue = currentValue;
 
+    // Validation for ZIP Code - only digits, max 5
+    if (zipCodeFields.includes(field.name)) {
+      cleanedValue = currentValue.replace(/[^0-9]/g, '').slice(0, 5);
+      // Always update for zipCode to ensure sync
+      setValue(field.name, cleanedValue, { shouldValidate: false, shouldDirty: true });
+      return;
+    }
     // Validation for name fields - remove any invalid characters after paste or input
-    if (nameFields.includes(field.name)) {
+    else if (nameFields.includes(field.name)) {
       cleanedValue = currentValue.replace(/[^a-zA-Z\s]/g, '');
     }
     // Validation for numeric-like fields
@@ -89,7 +106,7 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
           id={field.name}
 
           type={
-            numericLikeFields.includes(field.name)
+            numericLikeFields.includes(field.name) || zipCodeFields.includes(field.name)
               ? "text"
               : field.type || "text"
           }
@@ -98,6 +115,8 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
           autoComplete="off"
           spellCheck={false}
           onKeyDown={handleKeyDown}
+          maxLength={zipCodeFields.includes(field.name) ? 5 : undefined}
+          inputMode={zipCodeFields.includes(field.name) ? "numeric" : undefined}
 
           className={cn(
             `
