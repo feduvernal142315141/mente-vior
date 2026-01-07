@@ -112,7 +112,6 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
                 side: "right",
                 columns: 1,
                 fields: [
-                    { name: "zipCode", label: "ZIP Code", type: "text", required: true },
                     { name: "status", label: "Status", type: "switch", visible: showStatus },
                     { name: "language", label: "Language", type: "select", options: [
                             { label: "English (US)", value: "en" }

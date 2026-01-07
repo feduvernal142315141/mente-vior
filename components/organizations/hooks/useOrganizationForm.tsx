@@ -97,9 +97,6 @@ export function useCompanyForm() {
         const resp = await serviceGetCompanyById(companyId!);
         const org = resp?.data;
 
-        console.log("🔍 Organization data from backend:", org);
-        console.log("🔍 UserCompany data:", org?.userCompany);
-
         if (!org) return;
 
         if (org.countryId) {
