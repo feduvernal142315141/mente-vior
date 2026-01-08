@@ -28,6 +28,10 @@ export function LogoField({ field, error }: LogoFieldProps) {
     }
   }, [fieldValue]);
 
+  useEffect(() => {
+    error && setLocalError(error);
+  }, [error]);
+
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -82,7 +86,7 @@ export function LogoField({ field, error }: LogoFieldProps) {
             hover:border-accent-primary hover:bg-accent-primary/5
             transition-all duration-200 group
           `,
-            (error || localError)
+            (localError)
               ? "border-red-500 bg-red-500/5 text-red-500"
               : "border-border-hairline"
           )}
@@ -137,8 +141,8 @@ export function LogoField({ field, error }: LogoFieldProps) {
         </div>
       )}
 
-      {(error || localError) && (
-        <p className="text-sm text-red-500 font-medium pt-1">{error || localError}</p>
+      {(localError) && (
+        <p className="text-sm text-red-500 font-medium pt-1">{localError}</p>
       )}
     </div>
   );
