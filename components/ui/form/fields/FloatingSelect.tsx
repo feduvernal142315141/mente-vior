@@ -120,7 +120,7 @@ export function FloatingSelect({ field, error, options, onFieldChange }: Floatin
                   peer-focus:text-blue-600
                 `,
                   shouldFloat
-                    ? "top-0 -translate-y-1/2 text-xs text-blue-600"
+                    ? "top-0 -translate-y-1/2 text-xs"
                     : "top-1/2 -translate-y-1/2"
                 )}
               >
