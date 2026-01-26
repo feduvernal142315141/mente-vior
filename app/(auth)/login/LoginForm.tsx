@@ -64,7 +64,7 @@ export default function LoginForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full h-[50px] bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white rounded-xl font-semibold shadow-lg"
+        className="w-full h-[50px] bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white rounded-xl font-semibold shadow-lg cursor-pointer"
       >
         {isSubmitting ? (
           <span className="flex items-center gap-2">

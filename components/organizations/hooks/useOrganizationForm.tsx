@@ -115,6 +115,9 @@ export function useCompanyForm() {
             taxonomyCode: org.taxonomyCode,
             logo: org.logo ? org.logo : "",
 
+            businessAgreement: org.businessAgreement ?? "",
+            serviceAgreement: org.serviceAgreement ?? "",
+
             country: org.countryId,
             stateId: org.stateId,
             city: org.city,
@@ -163,6 +166,8 @@ export function useCompanyForm() {
           mpi: data.mpi,
           taxonomyCode: data.taxonomyCode,
           logo: data.logo ? stripBase64Header(data.logo) : "",
+          businessAgreement: data.businessAgreement ? stripBase64Header(data.businessAgreement) : undefined,
+          serviceAgreement: data.serviceAgreement ? stripBase64Header(data.serviceAgreement) : undefined,
           stateId: data.stateId,
           city: data.city,
           address: data.address ?? "",

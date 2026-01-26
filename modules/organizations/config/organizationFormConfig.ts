@@ -24,6 +24,9 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
             taxonomyCode: "",
             logo: "",
 
+            businessAgreement: "",
+            serviceAgreement: "",
+
             country: "",
             stateId: "",
             city: "",
@@ -91,6 +94,17 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
                 columns: 1,
                 fields: [
                     { name: "logo", label: "Logo", type: "logo", required: true },
+                ],
+            },
+            {
+                id: "agreements",
+                title: "Agreements",
+                description: "Optional agreement documents",
+                side: "right",
+                columns: 1,
+                fields: [
+                    { name: "businessAgreement", label: "Business Agreement", type: "document", required: false },
+                    { name: "serviceAgreement", label: "Service Agreement", type: "document", required: false },
                 ],
             },
             {

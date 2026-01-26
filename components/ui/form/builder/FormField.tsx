@@ -8,6 +8,7 @@ import { FloatingSelect } from "../fields/FloatingSelect"
 import { SwitchField } from "../fields/SwitchField"
 import { FileUploadField } from "../fields/FileUploadField"
 import { LogoField } from "../fields/LogoField"
+import { DocumentField } from "../fields/DocumentField"
 import { FloatingInputField } from "../fields/FloatingInputField"
 
 interface FormFieldProps<TFormValues extends FieldValues = FieldValues> {
@@ -56,6 +57,7 @@ export function FormField<TFormValues extends FieldValues = FieldValues>({
     switch: SwitchField,
     file: FileUploadField,
     logo: LogoField,
+    document: DocumentField,
   };
 
   const Component =

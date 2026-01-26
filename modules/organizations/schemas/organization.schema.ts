@@ -37,6 +37,9 @@ export const organizationCreateSchema = z.object({
 
   logo: z.string().min(1, "Logo is required"),
 
+  businessAgreement: z.string().optional(),
+  serviceAgreement: z.string().optional(),
+
   country: z.string().min(1, "Country is required"),
   stateId: z.string().min(1, "State is required"),
   city: z.string().min(1),

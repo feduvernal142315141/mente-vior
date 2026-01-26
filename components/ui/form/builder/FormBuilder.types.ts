@@ -3,7 +3,7 @@ import type { ZodTypeAny } from "zod";
 export interface FieldConfig<TFormValues> {
   name: string;
   label: string;
-  type: "text" | "email" | "number" | "textarea" | "select" | "switch" | "file" | "logo";
+  type: "text" | "email" | "number" | "textarea" | "select" | "switch" | "file" | "logo" | "document";
   required?: boolean;
   options?: { label: string; value: string }[];
   optionsKey?: string;

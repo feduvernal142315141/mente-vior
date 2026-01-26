@@ -12,6 +12,8 @@ export interface RequestCreateCompany {
   mpi: string;
   taxonomyCode: string;
   logo: string;
+  businessAgreement?: string;
+  serviceAgreement?: string;
   stateId: string;
   city: string;
   address: string;
@@ -41,6 +43,8 @@ export interface Organization {
   mpi: string;
   taxonomyCode: string;
   logo: string;
+  businessAgreement?: string;
+  serviceAgreement?: string;
   city: string;
   address: string;
   zipCode: string;
