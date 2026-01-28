@@ -16,6 +16,24 @@ export function stripBase64Header(base64: string): string {
 }
 
 /**
+ * Procesa un campo de archivo para enviar al backend
+ * - Si es una URL (archivo no modificado): retorna undefined (no enviar)
+ * - Si es base64 nuevo (archivo modificado): retorna base64 sin header
+ * - Si está vacío: retorna undefined
+ */
+export function processFileField(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+
+  // Si es una URL (http/https), significa que no se modificó
+  if (value.startsWith("http://") || value.startsWith("https://")) {
+    return undefined;
+  }
+
+  // Si es base64 (con o sin header), stripear el header
+  return stripBase64Header(value);
+}
+
+/**
  * Convierte una fecha ISO a formato relativo (ej: "2 hours ago", "3 days ago")
  * @param dateString - Fecha en formato ISO (ej: "2025-12-06T04:45:54.705+00:00")
  * @returns String con el tiempo relativo en inglés

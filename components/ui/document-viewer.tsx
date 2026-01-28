@@ -20,12 +20,13 @@ export function DocumentViewer({ open, onClose, documentUrl, fileName = "documen
     const link = document.createElement("a");
     link.href = documentUrl;
     link.download = fileName;
+    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const pdfUrl = `${documentUrl}#view=FitH&toolbar=0&navpanes=0`;
+  const pdfUrl = documentUrl;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -92,27 +93,22 @@ export function DocumentViewer({ open, onClose, documentUrl, fileName = "documen
             </div>
           </div>
 
-          <div className="flex-1 overflow-hidden bg-[#ffffff] dark:bg-[#1a1a1a] relative p-4">
+          <div className="flex-1 overflow-hidden bg-[#525659] relative">
             {loading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#ffffff] dark:bg-[#1a1a1a] z-10">
+              <div className="absolute inset-0 flex items-center justify-center bg-[#525659] z-10">
                 <div className="flex flex-col items-center gap-3">
-                  <Loader2 className="w-8 h-8 text-accent-primary animate-spin" />
-                  <p className="text-sm text-text-muted">Loading document...</p>
+                  <Loader2 className="w-8 h-8 text-white animate-spin" />
+                  <p className="text-sm text-white">Loading document...</p>
                 </div>
               </div>
             )}
-            <object
-              data={pdfUrl}
-              type="application/pdf"
-              className="w-full h-full rounded-lg"
+
+            <iframe
+              src={pdfUrl}
+              title={fileName}
+              className="w-full h-full border-none"
               onLoad={() => setLoading(false)}
-            >
-              <embed
-                src={pdfUrl}
-                type="application/pdf"
-                className="w-full h-full rounded-lg"
-              />
-            </object>
+            />
           </div>
         </DialogPrimitive.Content>
       </DialogPortal>

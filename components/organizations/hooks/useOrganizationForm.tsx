@@ -15,7 +15,7 @@ import {
   serviceGetStateByCountryId,
 } from "@/lib/services/organizations/catalogs";
 
-import { stripBase64Header } from "@/lib/utils/format";
+import { stripBase64Header, processFileField } from "@/lib/utils/format";
 import { useAlert } from "@/lib/contexts/alert-context";
 
 export function useCompanyForm() {
@@ -166,8 +166,8 @@ export function useCompanyForm() {
           mpi: data.mpi,
           taxonomyCode: data.taxonomyCode,
           logo: data.logo ? stripBase64Header(data.logo) : "",
-          businessAgreement: data.businessAgreement ? stripBase64Header(data.businessAgreement) : undefined,
-          serviceAgreement: data.serviceAgreement ? stripBase64Header(data.serviceAgreement) : undefined,
+          businessAgreement: processFileField(data.businessAgreement),
+          serviceAgreement: processFileField(data.serviceAgreement),
           stateId: data.stateId,
           city: data.city,
           address: data.address ?? "",
@@ -205,11 +205,7 @@ export function useCompanyForm() {
 
         setTimeout(() => router.push("/organizations"), 600);
       } catch (error: any) {
-        console.group("❌ ERROR SAVING ORGANIZATION");
-        console.error("👉 error:", error);
-        console.error("👉 response:", error?.response);
-        console.error("👉 data:", error?.response?.data);
-        console.groupEnd();
+        
 
         let backendMessage = "An unexpected error occurred.";
 

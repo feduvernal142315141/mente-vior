@@ -25,11 +25,37 @@ export function DocumentField({ field, error }: DocumentFieldProps) {
   const [showViewer, setShowViewer] = useState(false);
 
   useEffect(() => {
-    if (typeof fieldValue === "string" && fieldValue.startsWith("data:application/pdf")) {
-      setPreview(fieldValue);
-      clearErrors(field.name);
+    if (typeof fieldValue === "string" && fieldValue.length > 0) {
+      const isBase64PDF = fieldValue.startsWith("data:application/pdf");
+      const isBase64WithoutHeader = !fieldValue.startsWith("data:") && !fieldValue.startsWith("http");
+      const isURL = fieldValue.startsWith("http");
+
+      if (isBase64PDF) {
+        setPreview(fieldValue);
+        setFileName("document.pdf");
+        clearErrors(field.name);
+      } else if (isBase64WithoutHeader) {
+        const fullBase64 = `data:application/pdf;base64,${fieldValue}`;
+        setPreview(fullBase64);
+        setFileName("document.pdf");
+        clearErrors(field.name);
+      } else if (isURL) {
+        setPreview(fieldValue);
+
+        const urlPath = fieldValue.split("?")[0]; 
+        const fullFileName = urlPath.split("/").pop() || "document.pdf"; 
+        
+        const cleanName = fullFileName.split("_")[0] + ".pdf";
+        setFileName(cleanName);
+        
+        
+        clearErrors(field.name);
+      }
+    } else if (!fieldValue) {
+      setPreview(null);
+      setFileName(null);
     }
-  }, [fieldValue]);
+  }, [fieldValue, clearErrors, field.name]);
 
   useEffect(() => {
     error && setLocalError(error);

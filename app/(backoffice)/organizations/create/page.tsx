@@ -8,7 +8,7 @@ import { organizationCreateSchema } from "@/modules/organizations/schemas/organi
 import { useRouter } from "next/navigation"
 
 export default function CreateOrganizationPage() {
-  const { onSubmit, isSubmitting, globalOptions, loadingOptions, loadStatesByCountry } = useCompanyForm();
+  const { onSubmit, isSubmitting, globalOptions, loadStatesByCountry } = useCompanyForm();
 
   const router = useRouter();
 
