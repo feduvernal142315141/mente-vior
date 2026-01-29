@@ -9,6 +9,7 @@ import { SwitchField } from "../fields/SwitchField"
 import { FileUploadField } from "../fields/FileUploadField"
 import { LogoField } from "../fields/LogoField"
 import { DocumentField } from "../fields/DocumentField"
+import { AgreementsField } from "../fields/AgreementsField"
 import { FloatingInputField } from "../fields/FloatingInputField"
 
 interface FormFieldProps<TFormValues extends FieldValues = FieldValues> {
@@ -58,6 +59,7 @@ export function FormField<TFormValues extends FieldValues = FieldValues>({
     file: FileUploadField,
     logo: LogoField,
     document: DocumentField,
+    agreements: AgreementsField,
   };
 
   const Component =

@@ -15,7 +15,7 @@ import {
   serviceGetStateByCountryId,
 } from "@/lib/services/organizations/catalogs";
 
-import { stripBase64Header, processFileField } from "@/lib/utils/format";
+import { stripBase64Header } from "@/lib/utils/format";
 import { useAlert } from "@/lib/contexts/alert-context";
 
 export function useCompanyForm() {
@@ -103,6 +103,33 @@ export function useCompanyForm() {
           await loadStatesByCountry(org.countryId);
         }
 
+        const parseAgreements = () => {
+          if (!org.agreements || !Array.isArray(org.agreements)) return [];
+          return org.agreements.map((item: any, idx: number) => {
+       
+            if (typeof item === "object" && item.name && item.value) {
+              return {
+                id: `agreement-${Date.now()}-${idx}`,
+                name: item.name,
+                value: item.value,
+              };
+            }
+
+            if (typeof item === "string") {
+              const urlPath = item.split("?")[0];
+              const fullFileName = urlPath.split("/").pop() || "document.pdf";
+              const parts = fullFileName.split("_");
+              const name = parts.length > 1 ? parts[0] : fullFileName.replace(".pdf", "");
+              return {
+                id: `agreement-${Date.now()}-${idx}`,
+                name,
+                value: item,
+              };
+            }
+            return item;
+          });
+        };
+
         const data = {
             legalName: org.legalName,
             agencyEmail: org.agencyEmail,
@@ -115,8 +142,7 @@ export function useCompanyForm() {
             taxonomyCode: org.taxonomyCode,
             logo: org.logo ? org.logo : "",
 
-            businessAgreement: org.businessAgreement ?? "",
-            serviceAgreement: org.serviceAgreement ?? "",
+            agreements: parseAgreements(),
 
             country: org.countryId,
             stateId: org.stateId,
@@ -155,6 +181,17 @@ export function useCompanyForm() {
       try {
         setIsSubmitting(true);
 
+        const processAgreements = (agreements: { id: string; name: string; value: string }[] | undefined): { name: string; content: string }[] => {
+          if (!agreements || !Array.isArray(agreements)) return [];
+          
+          return agreements
+            .filter(item => item.value && !item.value.startsWith("http")) 
+            .map(item => ({
+              name: item.name || "document",
+              content: stripBase64Header(item.value),
+            }));
+        };
+
         const payload = {
           legalName: data.legalName,
           agencyEmail: data.agencyEmail,
@@ -166,8 +203,7 @@ export function useCompanyForm() {
           mpi: data.mpi,
           taxonomyCode: data.taxonomyCode,
           logo: data.logo ? stripBase64Header(data.logo) : "",
-          businessAgreement: processFileField(data.businessAgreement),
-          serviceAgreement: processFileField(data.serviceAgreement),
+          agreements: processAgreements(data.agreements),
           stateId: data.stateId,
           city: data.city,
           address: data.address ?? "",

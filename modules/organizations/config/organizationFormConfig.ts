@@ -24,8 +24,7 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
             taxonomyCode: "",
             logo: "",
 
-            businessAgreement: "",
-            serviceAgreement: "",
+            agreements: [],
 
             country: "",
             stateId: "",
@@ -42,7 +41,6 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
 
             status: true,
             language: "en",
-            //subscription_plan: "basic",
         },
 
         sections: [
@@ -99,12 +97,11 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
             {
                 id: "agreements",
                 title: "Agreements",
-                description: "Optional agreement documents",
+                description: "Upload agreement documents for this organization",
                 side: "right",
                 columns: 1,
                 fields: [
-                    { name: "businessAgreement", label: "Business Agreement", type: "document", required: false },
-                    { name: "serviceAgreement", label: "Service Agreement", type: "document", required: false },
+                    { name: "agreements", label: "Agreement Documents", type: "agreements", required: false },
                 ],
             },
             {

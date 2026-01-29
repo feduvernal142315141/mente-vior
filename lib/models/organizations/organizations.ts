@@ -1,6 +1,12 @@
 import {QueryPaginationModel} from "@/lib/models/queryPaginationModel";
 
 
+// Agreement payload for create/update requests
+export interface AgreementPayload {
+  name: string;
+  content: string; // base64 without header
+}
+
 export interface RequestCreateCompany {
   legalName: string;
   agencyEmail: string;
@@ -12,8 +18,7 @@ export interface RequestCreateCompany {
   mpi: string;
   taxonomyCode: string;
   logo: string;
-  businessAgreement?: string;
-  serviceAgreement?: string;
+  agreements?: AgreementPayload[];
   stateId: string;
   city: string;
   address: string;
@@ -31,6 +36,12 @@ export interface RequestUpdateCompany extends RequestCreateCompany {
   id: string;
 }
 
+// Agreement item as returned from the API
+export interface AgreementItem {
+  name: string;
+  value: string; // URL or base64
+}
+
 export interface Organization {
   id: string;
   legalName: string;
@@ -43,8 +54,7 @@ export interface Organization {
   mpi: string;
   taxonomyCode: string;
   logo: string;
-  businessAgreement?: string;
-  serviceAgreement?: string;
+  agreements?: AgreementItem[] | string[]; // Can be array of objects or URLs
   city: string;
   address: string;
   zipCode: string;

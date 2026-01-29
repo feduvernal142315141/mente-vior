@@ -4,6 +4,12 @@ const phoneFaxRegex = /^[0-9+\-() ,./\\:;_*@!?=%&#]+$/;
 const alphanumericSpecialRegex = /^[a-zA-Z0-9+\-() ,./\\:;_*@!?=%&#]+$/;
 const nameRegex = /^[a-zA-Z\s]+$/;
 
+const agreementItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  value: z.string(), 
+});
+
 export const organizationCreateSchema = z.object({
   legalName: z.string().min(1, "Legal name is required"),
   agencyEmail: z.string().email("Invalid email address"),
@@ -37,8 +43,7 @@ export const organizationCreateSchema = z.object({
 
   logo: z.string().min(1, "Logo is required"),
 
-  businessAgreement: z.string().optional(),
-  serviceAgreement: z.string().optional(),
+  agreements: z.array(agreementItemSchema).optional().default([]),
 
   country: z.string().min(1, "Country is required"),
   stateId: z.string().min(1, "State is required"),
