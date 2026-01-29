@@ -12,6 +12,7 @@ interface Agreement {
   id: string;
   name: string;
   value: string;
+  isExisting?: boolean; 
 }
 
 interface AgreementsFieldProps {
@@ -35,9 +36,13 @@ export function AgreementsField({ field, error }: AgreementsFieldProps) {
 
   useEffect(() => {
     if (Array.isArray(fieldValue) && fieldValue.length > 0 && agreements.length === 0) {
-      const normalized = fieldValue.map((item, idx) => {
-        if (typeof item === "object" && item.name && item.value) {
-          return item;
+
+      const normalized = (fieldValue as any[]).map((item, idx) => {
+        if (typeof item === "object" && item !== null && item.name && item.value) {
+          return {
+            ...item,
+            isExisting: item.isExisting ?? (typeof item.value === "string" && item.value.startsWith("http")),
+          };
         }
 
         if (typeof item === "string") {
@@ -45,9 +50,10 @@ export function AgreementsField({ field, error }: AgreementsFieldProps) {
             id: `agreement-${Date.now()}-${idx}`,
             name: extractFileName(item),
             value: item,
+            isExisting: item.startsWith("http"),
           };
         }
-        return item;
+        return item as Agreement;
       });
       setAgreements(normalized);
     }
@@ -178,9 +184,9 @@ export function AgreementsField({ field, error }: AgreementsFieldProps) {
         {agreements.map((agreement, index) => (
           <div
             key={agreement.id}
-            draggable
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={(e) => handleDragOver(e, index)}
+            draggable={!agreement.isExisting}
+            onDragStart={() => !agreement.isExisting && handleDragStart(index)}
+            onDragOver={(e) => !agreement.isExisting && handleDragOver(e, index)}
             onDragEnd={handleDragEnd}
             className={cn(
               `
@@ -193,23 +199,26 @@ export function AgreementsField({ field, error }: AgreementsFieldProps) {
               hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)]
               dark:hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]
               `,
-              draggedIndex === index && "opacity-50 scale-[0.98]"
+              draggedIndex === index && "opacity-50 scale-[0.98]",
+              agreement.isExisting && "bg-surface-secondary/40 dark:bg-white/[0.02]"
             )}
           >
             <div className="flex items-stretch">
-              <div
-                className="
-                  flex items-center justify-center w-8 sm:w-10 
-                  border-r border-border-hairline
-                  cursor-grab active:cursor-grabbing
-                  text-text-muted hover:text-text-primary
-                  transition-colors
-                  rounded-l-xl
-                  bg-surface-secondary/30 dark:bg-white/[0.02]
-                "
-              >
-                <GripVertical className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              </div>
+              {!agreement.isExisting && (
+                <div
+                  className="
+                    flex items-center justify-center w-8 sm:w-10 
+                    border-r border-border-hairline
+                    cursor-grab active:cursor-grabbing
+                    text-text-muted hover:text-text-primary
+                    transition-colors
+                    rounded-l-xl
+                    bg-surface-secondary/30 dark:bg-white/[0.02]
+                  "
+                >
+                  <GripVertical className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </div>
+              )}
 
               <div className="flex-1 min-w-0 p-3 overflow-hidden">
                 {!agreement.value ? (
@@ -267,7 +276,7 @@ export function AgreementsField({ field, error }: AgreementsFieldProps) {
                         </TooltipContent>
                       </Tooltip>
                       <p className="text-xs text-text-muted mt-0.5">
-                        {agreement.value.startsWith("http") ? "Uploaded" : "Ready to save"}
+                        {agreement.isExisting ? "Saved document" : "Ready to save"}
                       </p>
                     </div>
 
@@ -289,49 +298,53 @@ export function AgreementsField({ field, error }: AgreementsFieldProps) {
                         <Eye className="w-4 h-4" />
                       </button>
 
-                      <label
-                        htmlFor={`change-${agreement.id}`}
-                        className="
-                          flex items-center justify-center
-                          w-8 h-8 rounded-lg cursor-pointer
-                          bg-surface-secondary/80 dark:bg-white/[0.05]
-                          border border-border-hairline
-                          text-text-secondary hover:text-accent-primary
-                          hover:border-accent-primary/30
-                          transition-all duration-150
-                        "
-                        title="Change file"
-                      >
-                        <Upload className="w-4 h-4" />
-                        <input
-                          id={`change-${agreement.id}`}
-                          type="file"
-                          accept="application/pdf"
-                          className="hidden"
-                          onChange={(e) => handleFileUpload(agreement.id, e)}
-                        />
-                      </label>
+                      {!agreement.isExisting && (
+                        <label
+                          htmlFor={`change-${agreement.id}`}
+                          className="
+                            flex items-center justify-center
+                            w-8 h-8 rounded-lg cursor-pointer
+                            bg-surface-secondary/80 dark:bg-white/[0.05]
+                            border border-border-hairline
+                            text-text-secondary hover:text-accent-primary
+                            hover:border-accent-primary/30
+                            transition-all duration-150
+                          "
+                          title="Change file"
+                        >
+                          <Upload className="w-4 h-4" />
+                          <input
+                            id={`change-${agreement.id}`}
+                            type="file"
+                            accept="application/pdf"
+                            className="hidden"
+                            onChange={(e) => handleFileUpload(agreement.id, e)}
+                          />
+                        </label>
+                      )}
                     </div>
                   </div>
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleRemoveAgreement(agreement.id)}
-                className="
-                  flex items-center justify-center w-8 sm:w-10
-                  border-l border-border-hairline
-                  text-text-muted hover:text-status-danger
-                  hover:bg-status-danger/5
-                  transition-all duration-150
-                  rounded-r-xl
-                  cursor-pointer
-                "
-                title="Remove"
-              >
-                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              </button>
+              {!agreement.isExisting && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAgreement(agreement.id)}
+                  className="
+                    flex items-center justify-center w-8 sm:w-10
+                    border-l border-border-hairline
+                    text-text-muted hover:text-status-danger
+                    hover:bg-status-danger/5
+                    transition-all duration-150
+                    rounded-r-xl
+                    cursor-pointer
+                  "
+                  title="Remove"
+                >
+                  <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </button>
+              )}
             </div>
           </div>
         ))}

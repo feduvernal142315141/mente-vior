@@ -106,12 +106,21 @@ export function useCompanyForm() {
         const parseAgreements = () => {
           if (!org.agreements || !Array.isArray(org.agreements)) return [];
           return org.agreements.map((item: any, idx: number) => {
+            if (typeof item === "object" && item.id && item.name && item.content) {
+              return {
+                id: item.id,
+                name: item.name.replace(".pdf", ""),
+                value: item.content, 
+                isExisting: true, 
+              };
+            }
        
             if (typeof item === "object" && item.name && item.value) {
               return {
                 id: `agreement-${Date.now()}-${idx}`,
                 name: item.name,
                 value: item.value,
+                isExisting: item.value.startsWith("http"),
               };
             }
 
@@ -124,6 +133,7 @@ export function useCompanyForm() {
                 id: `agreement-${Date.now()}-${idx}`,
                 name,
                 value: item,
+                isExisting: true,
               };
             }
             return item;
