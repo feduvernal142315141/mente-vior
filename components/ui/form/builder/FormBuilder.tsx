@@ -20,6 +20,7 @@ export function FormBuilder<TFormValues extends FieldValues>({
   onSubmit,
   onFieldChange,
   loadStatesByCountry,
+  isEditMode = false,
 }: FormBuilderProps<TFormValues>) {
   const [activeSection, setActiveSection] = React.useState<string>("general");
   const [hoveredSection, setHoveredSection] = React.useState<string | null>(null);
@@ -110,6 +111,7 @@ export function FormBuilder<TFormValues extends FieldValues>({
                 setHoveredSection={setHoveredSection}
                 flashSection={flashSection}
                 onFieldChange={handleFieldChange}
+                isEditMode={isEditMode}
               />
             ))}
           </div>
@@ -125,6 +127,7 @@ export function FormBuilder<TFormValues extends FieldValues>({
                 hoveredSection={hoveredSection}
                 setHoveredSection={setHoveredSection}
                 flashSection={flashSection}
+                isEditMode={isEditMode}
               />
             ))}
           </div>

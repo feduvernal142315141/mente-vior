@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, X, Upload, Eye, Plus, GripVertical } from "lucide-react";
+import { FileText, X, Upload, Eye, Plus, GripVertical, Trash2 } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { DocumentViewer } from "@/components/ui/document-viewer";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useAlert } from "@/lib/contexts/alert-context";
+import { serviceDeleteAgreement } from "@/lib/services/organizations/organizations";
 
 interface Agreement {
   id: string;
@@ -22,17 +24,20 @@ interface AgreementsFieldProps {
     required?: boolean;
   };
   error?: string;
+  isEditMode?: boolean;
 }
 
-export function AgreementsField({ field, error }: AgreementsFieldProps) {
+export function AgreementsField({ field, error, isEditMode = false }: AgreementsFieldProps) {
   const { setValue, watch, clearErrors } = useFormContext();
   const fieldValue = watch(field.name) as Agreement[] | undefined;
+  const { showConfirm, showSuccess, showError } = useAlert();
 
   const [agreements, setAgreements] = useState<Agreement[]>([]);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerDocument, setViewerDocument] = useState<{ url: string; name: string } | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (Array.isArray(fieldValue) && fieldValue.length > 0 && agreements.length === 0) {
@@ -97,6 +102,35 @@ export function AgreementsField({ field, error }: AgreementsFieldProps) {
 
   const handleRemoveAgreement = (id: string) => {
     setAgreements((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const handleDeleteExistingAgreement = (agreement: Agreement) => {
+    showConfirm({
+      title: "Delete Agreement",
+      description: (
+        <span>
+          Are you sure you want to delete <strong>{agreement.name || "this document"}.pdf</strong>? This action cannot be undone.
+        </span>
+      ),
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        setDeletingId(agreement.id);
+        try {
+          const response = await serviceDeleteAgreement(agreement.id);
+          if (response?.status === 200 || response?.status === 204) {
+            setAgreements((prev) => prev.filter((a) => a.id !== agreement.id));
+            showSuccess("Agreement deleted", "The document has been deleted successfully.");
+          } else {
+            showError("Error", "Failed to delete the agreement. Please try again.");
+          }
+        } catch {
+          showError("Error", "An unexpected error occurred. Please try again.");
+        } finally {
+          setDeletingId(null);
+        }
+      },
+    });
   };
 
   const handleFileUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -297,6 +331,28 @@ export function AgreementsField({ field, error }: AgreementsFieldProps) {
                       >
                         <Eye className="w-4 h-4" />
                       </button>
+
+                      {agreement.isExisting && isEditMode && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteExistingAgreement(agreement)}
+                          disabled={deletingId === agreement.id}
+                          className="
+                            flex items-center justify-center
+                            w-8 h-8 rounded-lg cursor-pointer
+                            bg-surface-secondary/80 dark:bg-white/[0.05]
+                            border border-border-hairline
+                            text-text-secondary hover:text-status-danger
+                            hover:border-status-danger/30
+                            hover:bg-status-danger/5
+                            transition-all duration-150
+                            disabled:opacity-50 disabled:cursor-not-allowed
+                          "
+                          title="Delete"
+                        >
+                          <Trash2 className={cn("w-4 h-4", deletingId === agreement.id && "animate-pulse")} />
+                        </button>
+                      )}
 
                       {!agreement.isExisting && (
                         <label

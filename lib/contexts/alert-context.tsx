@@ -80,7 +80,7 @@ export function AlertProvider({children}: { children: ReactNode }) {
           space-y-4
         "
                 >
-                    {/* ICONO */}
+         
                     <div className="flex justify-center">
                         {alert?.type === "success" && (
                             <div
@@ -104,19 +104,19 @@ export function AlertProvider({children}: { children: ReactNode }) {
                         )}
                     </div>
 
-                    {/* TITULO */}
+                
                     <AlertDialogTitle className="text-center text-lg font-semibold">
                         {alert?.title}
                     </AlertDialogTitle>
 
-                    {/* DESCRIPCION */}
+          
                     {alert?.description && (
                         <AlertDialogDescription className="text-center text-sm text-text-secondary">
                             {alert.description}
                         </AlertDialogDescription>
                     )}
 
-                    {/* ACCIONES */}
+     
                     <div className="flex justify-end gap-2 mt-3">
 
                         {alert?.type === "confirm" ? (
@@ -129,6 +129,7 @@ export function AlertProvider({children}: { children: ReactNode }) {
                   border border-border-hairline/40
                   hover:bg-surface-secondary/80
                   transition
+                  cursor-pointer
                 "
                                 >
                                     {alert.cancelText ?? "Cancel"}
@@ -144,6 +145,7 @@ export function AlertProvider({children}: { children: ReactNode }) {
                   bg-accent-primary hover:bg-accent-hover 
                   text-white shadow
                   transition
+                  cursor-pointer
                 "
                                 >
                                     {alert.confirmText ?? "Confirm"}
@@ -157,6 +159,7 @@ export function AlertProvider({children}: { children: ReactNode }) {
                 bg-accent-primary hover:bg-accent-hover 
                 text-white shadow
                 transition
+                cursor-pointer
               "
                             >
                                 OK

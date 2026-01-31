@@ -16,12 +16,14 @@ interface FormFieldProps<TFormValues extends FieldValues = FieldValues> {
   field: FieldConfig<TFormValues>
   globalOptions?: GlobalOptionsMap
   onFieldChange?: (name: string, value: any) => void
+  isEditMode?: boolean
 }
 
 export function FormField<TFormValues extends FieldValues = FieldValues>({
   field,
   globalOptions,
-  onFieldChange, 
+  onFieldChange,
+  isEditMode = false,
 }: FormFieldProps<TFormValues>) {
   const { formState } = useFormContext<TFormValues>();
 
@@ -47,6 +49,7 @@ export function FormField<TFormValues extends FieldValues = FieldValues>({
     options,
     error,
     onFieldChange,
+    isEditMode,
   };
 
   const components: Record<string, React.ComponentType<any>> = {

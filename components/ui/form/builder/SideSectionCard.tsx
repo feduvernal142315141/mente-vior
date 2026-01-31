@@ -13,6 +13,7 @@ interface Props<TFormValues extends FieldValues> {
     hoveredSection?: string | null;
     setHoveredSection?: (section: string | null) => void;
     flashSection?: string | null;
+    isEditMode?: boolean;
 }
 
 export function SideSectionCard<TFormValues extends FieldValues>({
@@ -23,6 +24,7 @@ export function SideSectionCard<TFormValues extends FieldValues>({
                                                                      hoveredSection,
                                                                      setHoveredSection,
                                                                      flashSection,
+                                                                     isEditMode = false,
                                                                  }: Props<TFormValues>) {
     const fields:FieldConfig<TFormValues>[] = section.fields.map(
         (field: FieldConfig<TFormValues>) => ({...field, visible: field.visible ?? true}))
@@ -95,6 +97,7 @@ export function SideSectionCard<TFormValues extends FieldValues>({
                                 key={String(field.name)}
                                 field={field}
                                 globalOptions={globalOptions}
+                                isEditMode={isEditMode}
                             />
                         )
                     ))}

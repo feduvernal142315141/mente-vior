@@ -1,6 +1,6 @@
 import { CompanyListResponse, Organization, RequestCreateCompany, RequestUpdateCompany } from "@/lib/models/organizations/organizations"
 import { ServiceResponse } from "@/lib/models/response"
-import { serviceGet, servicePost, servicePut } from "../baseService"
+import { serviceDelete, serviceGet, servicePost, servicePut } from "../baseService"
 import { QueryModel } from "@/lib/models/queryModel"
 import { getQueryString } from "@/lib/utils/format"
 
@@ -36,4 +36,10 @@ export const serviceUpdateCompany = async (
         `/company`,
         campaign
     )
+}
+
+export const serviceDeleteAgreement = async (
+    agreementId: string
+): ServiceResponse<string> => {
+    return serviceDelete<void, string>(`/company/agreements/${agreementId}`)
 }

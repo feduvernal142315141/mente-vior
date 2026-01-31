@@ -37,4 +37,5 @@ export interface FormBuilderProps<TFormValues> {
   onFieldChange?: (name: string, value: any) => void;
   loadStatesByCountry?: (countryId: string) => void;
   onSubmit: (data: TFormValues) => void | Promise<void>;
+  isEditMode?: boolean;
 }

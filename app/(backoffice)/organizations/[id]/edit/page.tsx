@@ -60,6 +60,7 @@ export default function EditOrganizationPage({ params }: { params: { id: string 
           globalOptions={globalOptions}
           loadStatesByCountry={loadStatesByCountry}
           onSubmit={onSubmit}
+          isEditMode
         />
       </div>
 

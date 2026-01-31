@@ -12,6 +12,7 @@ interface Props<TFormValues extends FieldValues> {
   setHoveredSection?: (section: string | null) => void
   flashSection?: string | null
   onFieldChange?: (name: string, value: any) => void
+  isEditMode?: boolean
 }
 
 export function SectionCard<TFormValues extends FieldValues>({
@@ -20,6 +21,7 @@ export function SectionCard<TFormValues extends FieldValues>({
   setActiveSection,
   flashSection,
   onFieldChange,
+  isEditMode = false,
 }: Props<TFormValues>) {
   const columns = section.columns ?? 2
   const isFlashing = flashSection === section.id
@@ -94,6 +96,7 @@ export function SectionCard<TFormValues extends FieldValues>({
                  field={field}
                  globalOptions={globalOptions}
                  onFieldChange={onFieldChange}
+                 isEditMode={isEditMode}
              />
              )
           ))}
