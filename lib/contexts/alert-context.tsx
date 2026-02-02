@@ -24,7 +24,7 @@ interface AlertState {
 
 interface AlertContextType {
     showConfirm: (options: Omit<AlertState, "type">) => void;
-    showSuccess: (title: string, description?: string) => void;
+    showSuccess: (title: string, description?: string, durationMs?: number) => void;
     showError: (title: string, description?: string) => void;
     close: () => void;
 }
@@ -53,14 +53,14 @@ export function AlertProvider({children}: { children: ReactNode }) {
         }, 15000);
     }, [close]);
 
-    const showSuccess = useCallback((title: string, description?: string) => {
+    const showSuccess = useCallback((title: string, description?: string, durationMs: number = 5000) => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
         setAlert({type: "success", title, description});
         timeoutRef.current = setTimeout(() => {
             close();
-        }, 5000);
+        }, durationMs);
     }, [close]);
 
     const showError = useCallback((title: string, description?: string) => {
@@ -70,7 +70,7 @@ export function AlertProvider({children}: { children: ReactNode }) {
         setAlert({type: "error", title, description});
         timeoutRef.current = setTimeout(() => {
             close();
-        }, 5000);
+        }, durationMs);
     }, [close]);
 
     const contextValue = useMemo(() => ({

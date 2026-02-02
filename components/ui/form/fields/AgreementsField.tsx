@@ -129,7 +129,7 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
           const response = await serviceDeleteAgreement(agreement.id);
           if (response?.status >= 200 && response?.status < 300) {
             setAgreements((prev) => prev.filter((a) => a.id !== agreement.id));
-            showSuccess("Agreement deleted", "The document has been deleted successfully.");
+            showSuccess("Agreement deleted", "The document has been deleted successfully.", 2000);
           } else {
             showError("Error", "Failed to delete the agreement. Please try again.");
           }

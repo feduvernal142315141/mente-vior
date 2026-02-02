@@ -16,16 +16,7 @@ interface DocumentViewerProps {
 export function DocumentViewer({ open, onClose, documentUrl, fileName = "document.pdf" }: DocumentViewerProps) {
   const [loading, setLoading] = useState(true);
 
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = documentUrl;
-    link.download = fileName;
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
+  
   const pdfUrl = documentUrl;
 
   return (
@@ -60,22 +51,6 @@ export function DocumentViewer({ open, onClose, documentUrl, fileName = "documen
               </div>
 
               <div className="flex items-center gap-2">
-                <button
-                  onClick={handleDownload}
-                  className={cn(
-                    "h-9 px-4 rounded-lg",
-                    "bg-surface-primary border border-border-hairline",
-                    "hover:bg-accent-primary/10 hover:border-accent-primary/30",
-                    "transition-all duration-200",
-                    "flex items-center gap-2",
-                    "text-sm font-medium text-text-primary",
-                    "cursor-pointer"
-                  )}
-                >
-                  <Download className="w-4 h-4" />
-                  Download
-                </button>
-
                 <button
                   onClick={onClose}
                   className={cn(
