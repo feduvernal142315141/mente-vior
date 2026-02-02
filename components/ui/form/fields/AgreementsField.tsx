@@ -10,6 +10,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useAlert } from "@/lib/contexts/alert-context";
 import { serviceDeleteAgreement, serviceGetDocumentUrl } from "@/lib/services/organizations/organizations";
 
+const MAX_AGREEMENTS = 15;
+
 interface Agreement {
   id: string;
   name: string;
@@ -93,6 +95,12 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
   const generateId = () => `agreement-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
   const handleAddAgreement = () => {
+    if (agreements.length >= MAX_AGREEMENTS) {
+      setLocalError(`You can upload a maximum of ${MAX_AGREEMENTS} documents.`);
+      return;
+    }
+    
+    setLocalError(null);
     const newAgreement: Agreement = {
       id: generateId(),
       name: "",
@@ -167,7 +175,6 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
   const handleViewDocument = async (agreement: Agreement) => {
     const documentName = agreement.name || "document.pdf";
     
-    // If it's an existing document from S3, fetch the URL from the API
     if (agreement.isExisting) {
       setLoadingDocumentId(agreement.id);
       try {
@@ -186,7 +193,6 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
       return;
     }
     
-    // For new documents (base64), handle locally
     let url = agreement.value;
     if (!url.startsWith("data:") && !url.startsWith("http")) {
       url = `data:application/pdf;base64,${url}`;
@@ -434,7 +440,9 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
         type="button"
         variant="outline"
         onClick={handleAddAgreement}
-        className="
+        disabled={agreements.length >= MAX_AGREEMENTS}
+        className={cn(
+          `
           w-full h-11 sm:h-12
           border-2 border-dashed border-border-hairline
           bg-transparent hover:bg-accent-primary/5
@@ -443,10 +451,12 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
           transition-all duration-200
           rounded-xl
           cursor-pointer
-        "
+          `,
+          agreements.length >= MAX_AGREEMENTS && "opacity-50 cursor-not-allowed hover:bg-transparent hover:border-border-hairline hover:text-text-secondary"
+        )}
       >
         <Plus className="w-4 h-4 mr-2" />
-        Add Agreement
+        Add Agreement {agreements.length >= MAX_AGREEMENTS && `(Max ${MAX_AGREEMENTS})`}
       </Button>
 
       {localError && (
