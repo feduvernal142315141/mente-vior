@@ -8,7 +8,7 @@ import { DocumentViewer } from "@/components/ui/document-viewer";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAlert } from "@/lib/contexts/alert-context";
-import { serviceDeleteAgreement } from "@/lib/services/organizations/organizations";
+import { serviceDeleteAgreement, serviceGetDocumentUrl } from "@/lib/services/organizations/organizations";
 
 interface Agreement {
   id: string;
@@ -38,6 +38,7 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
   const [localError, setLocalError] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [loadingDocumentId, setLoadingDocumentId] = useState<string | null>(null);
 
   useEffect(() => {
     if (Array.isArray(fieldValue) && fieldValue.length > 0 && agreements.length === 0) {
@@ -118,7 +119,7 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
         setDeletingId(agreement.id);
         try {
           const response = await serviceDeleteAgreement(agreement.id);
-          if (response?.status === 200 || response?.status === 204) {
+          if (response?.status >= 200 && response?.status < 300) {
             setAgreements((prev) => prev.filter((a) => a.id !== agreement.id));
             showSuccess("Agreement deleted", "The document has been deleted successfully.");
           } else {
@@ -163,14 +164,35 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
     reader.readAsDataURL(file);
   };
 
-  const handleViewDocument = (agreement: Agreement) => {
-    let url = agreement.value;
+  const handleViewDocument = async (agreement: Agreement) => {
+    const documentName = agreement.name || "document.pdf";
     
+    // If it's an existing document from S3, fetch the URL from the API
+    if (agreement.isExisting) {
+      setLoadingDocumentId(agreement.id);
+      try {
+        const response = await serviceGetDocumentUrl(agreement.id);
+        if (response?.status >= 200 && response?.status < 300 && response?.data?.url) {
+          setViewerDocument({ url: response.data.url, name: documentName });
+          setViewerOpen(true);
+        } else {
+          showError("Error", "Failed to load the document. Please try again.");
+        }
+      } catch {
+        showError("Error", "An unexpected error occurred while loading the document.");
+      } finally {
+        setLoadingDocumentId(null);
+      }
+      return;
+    }
+    
+    // For new documents (base64), handle locally
+    let url = agreement.value;
     if (!url.startsWith("data:") && !url.startsWith("http")) {
       url = `data:application/pdf;base64,${url}`;
     }
     
-    setViewerDocument({ url, name: agreement.name || "document.pdf" });
+    setViewerDocument({ url, name: documentName });
     setViewerOpen(true);
   };
 
@@ -318,6 +340,7 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
                       <button
                         type="button"
                         onClick={() => handleViewDocument(agreement)}
+                        disabled={loadingDocumentId === agreement.id}
                         className="
                           flex items-center justify-center
                           w-8 h-8 rounded-lg cursor-pointer
@@ -326,10 +349,11 @@ export function AgreementsField({ field, error, isEditMode = false }: Agreements
                           text-text-secondary hover:text-accent-primary
                           hover:border-accent-primary/30
                           transition-all duration-150
+                          disabled:opacity-50 disabled:cursor-not-allowed
                         "
                         title="Preview"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className={cn("w-4 h-4", loadingDocumentId === agreement.id && "animate-pulse")} />
                       </button>
 
                       {agreement.isExisting && isEditMode && (

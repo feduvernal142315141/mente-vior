@@ -1,6 +1,6 @@
 "use client";
 
-import React, {createContext, useContext, useState, ReactNode} from "react";
+import React, {createContext, useContext, useState, useCallback, useRef, useMemo, ReactNode} from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -33,36 +33,55 @@ const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 export function AlertProvider({children}: { children: ReactNode }) {
     const [alert, setAlert] = useState<AlertState | null>(null);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const showConfirm = (options: Omit<AlertState, "type">) =>{
+    const close = useCallback(() => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
+        setAlert(null);
+    }, []);
+
+    const showConfirm = useCallback((options: Omit<AlertState, "type">) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
         setAlert({...options, type: "confirm"});
-        setTimeout(() => {
-                close()
-            }
-            , 15000)
-    }
+        timeoutRef.current = setTimeout(() => {
+            close();
+        }, 15000);
+    }, [close]);
 
-    const showSuccess = (title: string, description?: string) => {
-
+    const showSuccess = useCallback((title: string, description?: string) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
         setAlert({type: "success", title, description});
-        setTimeout(() => {
-                close()
-            }
-            , 5000)
-    }
+        timeoutRef.current = setTimeout(() => {
+            close();
+        }, 5000);
+    }, [close]);
 
-    const showError = (title: string, description?: string) => {
+    const showError = useCallback((title: string, description?: string) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
         setAlert({type: "error", title, description});
-        setTimeout(() => {
-                close()
-            }
-            , 5000)
-    }
+        timeoutRef.current = setTimeout(() => {
+            close();
+        }, 5000);
+    }, [close]);
 
-    const close = () => setAlert(null);
+    const contextValue = useMemo(() => ({
+        showConfirm,
+        showSuccess,
+        showError,
+        close
+    }), [showConfirm, showSuccess, showError, close]);
 
     return (
-        <AlertContext.Provider value={{showConfirm, showSuccess, showError, close}}>
+        <AlertContext.Provider value={contextValue}>
             {children}
             <AlertDialog open={!!alert} onOpenChange={close}>
                 <AlertDialogContent

@@ -43,3 +43,9 @@ export const serviceDeleteAgreement = async (
 ): ServiceResponse<string> => {
     return serviceDelete<void, string>(`/company/agreements/${agreementId}`)
 }
+
+export const serviceGetDocumentUrl = async (
+    documentId: string
+): ServiceResponse<{ url: string }> => {
+    return serviceGet<{ url: string }>(`/company/document/${documentId}`)
+}
