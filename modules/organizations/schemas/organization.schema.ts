@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { phoneNumberSchema } from "@/lib/schemas/phone-number-schema";
 
 const phoneFaxRegex = /^[0-9+\-() ,./\\:;_*@!?=%&#]+$/;
 const alphanumericSpecialRegex = /^[a-zA-Z0-9+\-() ,./\\:;_*@!?=%&#]+$/;
@@ -14,10 +15,7 @@ export const organizationCreateSchema = z.object({
   legalName: z.string().min(1, "Legal name is required"),
   agencyEmail: z.string().email("Invalid email address"),
 
-  phoneNumber: z
-    .string()
-    .min(1, "Phone number is required")
-    .regex(phoneFaxRegex, "Only digits and special characters, are allowed"), 
+  phoneNumber: phoneNumberSchema(),
 
   fax: z
     .string()
@@ -67,8 +65,7 @@ export const organizationCreateSchema = z.object({
       .min(1, "Last name is required")
       .regex(nameRegex, "Only letters and spaces are allowed"),
     email: z.string().email(),
-    phoneNumber: z.string().min(1, "Phone number is required")
-    .regex(phoneFaxRegex, "Only digits and special characters, are allowed"),
+    phoneNumber: phoneNumberSchema(),
   }),
 });
 

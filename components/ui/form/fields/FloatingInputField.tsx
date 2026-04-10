@@ -2,6 +2,7 @@
 
 import { useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
+import { formatPhoneInput } from "@/lib/utils/phone-validation";
 
 interface FloatingInputProps {
   field: {
@@ -14,9 +15,10 @@ interface FloatingInputProps {
 }
 
 export function FloatingInputField({ field, error }: FloatingInputProps) {
-  const { register, setValue, watch } = useFormContext();
+  const { register, setValue } = useFormContext();
 
-  const numericLikeFields = ["phoneNumber", "fax", "ein", "npi", "mpi", "userCompany.phoneNumber" ];
+  const phoneFields = ["phoneNumber", "userCompany.phoneNumber"];
+  const numericLikeFields = ["fax", "ein", "npi", "mpi"];
   const alphanumericFields = ["taxonomyCode"];
   const nameFields = ["userCompany.firstName", "userCompany.lastName"];
   const zipCodeFields = ["zipCode"]; // Only digits, exactly 5
@@ -38,7 +40,14 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
       return;
     }
 
-    // Validation for numeric-like fields (phone, fax, ein, npi, mpi)
+    if (phoneFields.includes(field.name)) {
+      if (!/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+      }
+      return;
+    }
+
+    // Validation for numeric-like fields (fax, ein, npi, mpi)
     if (numericLikeFields.includes(field.name)) {
       const allowedRegex = /^[0-9+\-() ,./\\:;_*@!?=%&#]+$/;
       if (!allowedRegex.test(e.key)) {
@@ -81,6 +90,10 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
     else if (nameFields.includes(field.name)) {
       cleanedValue = currentValue.replace(/[^a-zA-Z\s]/g, '');
     }
+    // Validation for phone fields
+    else if (phoneFields.includes(field.name)) {
+      cleanedValue = formatPhoneInput(currentValue);
+    }
     // Validation for numeric-like fields
     else if (numericLikeFields.includes(field.name)) {
       cleanedValue = currentValue.replace(/[^0-9+\-() ,./\\:;_*@!?=%&#]/g, '');
@@ -106,7 +119,9 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
           id={field.name}
 
           type={
-            numericLikeFields.includes(field.name) || zipCodeFields.includes(field.name)
+            phoneFields.includes(field.name) ||
+            numericLikeFields.includes(field.name) ||
+            zipCodeFields.includes(field.name)
               ? "text"
               : field.type || "text"
           }
@@ -116,7 +131,11 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
           spellCheck={false}
           onKeyDown={handleKeyDown}
           maxLength={zipCodeFields.includes(field.name) ? 5 : undefined}
-          inputMode={zipCodeFields.includes(field.name) ? "numeric" : undefined}
+          inputMode={
+            phoneFields.includes(field.name) || zipCodeFields.includes(field.name)
+              ? "numeric"
+              : undefined
+          }
 
           className={cn(
             `
