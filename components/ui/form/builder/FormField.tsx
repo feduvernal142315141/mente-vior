@@ -5,6 +5,7 @@ import type { FieldConfig, GlobalOptionsMap } from "./FormBuilder.types"
 
 import { TextAreaField } from "../fields/TextAreaField"
 import { FloatingSelect } from "../fields/FloatingSelect"
+import { MultiSelectField } from "../fields/MultiSelectField"
 import { SwitchField } from "../fields/SwitchField"
 import { FileUploadField } from "../fields/FileUploadField"
 import { LogoField } from "../fields/LogoField"
@@ -58,6 +59,7 @@ export function FormField<TFormValues extends FieldValues = FieldValues>({
     number: FloatingInputField,
     textarea: TextAreaField,
     select: FloatingSelect,
+    multiselect: MultiSelectField,
     switch: SwitchField,
     file: FileUploadField,
     logo: LogoField,

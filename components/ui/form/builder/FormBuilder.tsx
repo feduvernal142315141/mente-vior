@@ -20,6 +20,7 @@ export function FormBuilder<TFormValues extends FieldValues>({
   onSubmit,
   onFieldChange,
   loadStatesByCountry,
+  loadTimeZonesByState,
   isEditMode = false,
 }: FormBuilderProps<TFormValues>) {
   const [activeSection, setActiveSection] = React.useState<string>("general");
@@ -77,9 +78,36 @@ export function FormBuilder<TFormValues extends FieldValues>({
   };
 
 
-  const handleFieldChange = (name: string, value: any) => {
+  const handleFieldChange = async (name: string, value: any) => {
     if (name === "country" && loadStatesByCountry) {
       loadStatesByCountry(value);
+      form.setValue("stateId" as any, "", { shouldValidate: true });
+      form.setValue("timeZone" as any, "", { shouldValidate: true });
+    }
+
+    if (name === "stateId" && loadTimeZonesByState && value) {
+      form.setValue("timeZone" as any, "");
+      const city = form.getValues("city" as any);
+      const autoCode = await loadTimeZonesByState(value, city || undefined);
+      if (autoCode) {
+        // Wait for options state to propagate before setting value
+        setTimeout(() => {
+          form.setValue("timeZone" as any, autoCode, { shouldValidate: true });
+        }, 50);
+      }
+    }
+
+    if (name === "city" && loadTimeZonesByState) {
+      const stateId = form.getValues("stateId" as any);
+      const currentTz = form.getValues("timeZone" as any);
+      const tzOptions = globalOptions?.TIME_ZONES ?? [];
+      // Only refine if there are multiple timezone options (single = already resolved)
+      if (stateId && tzOptions.length > 1) {
+        const autoCode = await loadTimeZonesByState(stateId, value || undefined);
+        if (autoCode) {
+          form.setValue("timeZone" as any, autoCode, { shouldValidate: true });
+        }
+      }
     }
   };
 

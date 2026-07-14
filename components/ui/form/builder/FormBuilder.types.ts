@@ -3,7 +3,7 @@ import type { ZodTypeAny } from "zod";
 export interface FieldConfig<TFormValues> {
   name: string;
   label: string;
-  type: "text" | "email" | "number" | "textarea" | "select" | "switch" | "file" | "logo" | "document" | "agreements";
+  type: "text" | "email" | "number" | "textarea" | "select" | "multiselect" | "switch" | "file" | "logo" | "document" | "agreements";
   required?: boolean;
   options?: { label: string; value: string }[];
   optionsKey?: string;
@@ -36,6 +36,7 @@ export interface FormBuilderProps<TFormValues> {
   globalOptions?: GlobalOptionsMap;
   onFieldChange?: (name: string, value: any) => void;
   loadStatesByCountry?: (countryId: string) => void;
+  loadTimeZonesByState?: (stateId: string, city?: string) => Promise<string | null>;
   onSubmit: (data: TFormValues) => void | Promise<void>;
   isEditMode?: boolean;
 }

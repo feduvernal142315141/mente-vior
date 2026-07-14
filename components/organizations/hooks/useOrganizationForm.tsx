@@ -13,6 +13,8 @@ import {
 import {
   serviceGetCountries,
   serviceGetStateByCountryId,
+  serviceGetServiceCatalog,
+  serviceGetTimeZoneByState,
 } from "@/lib/services/organizations/catalogs";
 
 import { stripBase64Header } from "@/lib/utils/format";
@@ -31,6 +33,8 @@ export function useCompanyForm() {
   const [globalOptions, setGlobalOptions] = useState({
     COUNTRIES: [] as { label: string; value: string }[],
     STATES: [] as { label: string; value: string }[],
+    SERVICE_PLANS: [] as { label: string; value: string }[],
+    TIME_ZONES: [] as { label: string; value: string }[],
   });
 
   const [loadingOptions, setLoadingOptions] = useState(true);
@@ -39,12 +43,19 @@ export function useCompanyForm() {
     useState<OrganizationFormData | null>(null);
 
   useEffect(() => {
-    async function loadCountries() {
+    async function loadCatalogs() {
       try {
-        const response = await serviceGetCountries({ page: 0, pageSize: 300 });
+        const [countriesResp, servicesResp] = await Promise.all([
+          serviceGetCountries({ page: 0, pageSize: 300 }),
+          serviceGetServiceCatalog({ page: 0, pageSize: 100 }),
+        ]);
 
-        const countries = Array.isArray(response?.data?.entities)
-          ? response.data.entities
+        const countries = Array.isArray(countriesResp?.data?.entities)
+          ? countriesResp.data.entities
+          : [];
+
+        const services = Array.isArray(servicesResp?.data?.entities)
+          ? servicesResp.data.entities
           : [];
 
         setGlobalOptions(prev => ({
@@ -53,16 +64,20 @@ export function useCompanyForm() {
             label: c.name,
             value: c.id,
           })),
+          SERVICE_PLANS: services.map((s: any) => ({
+            label: s.name,
+            value: s.id,
+          })),
         }));
       } catch (e) {
-        console.error("Error loading countries:", e);
-        showError("Error", "Failed to load countries.");
+        console.error("Error loading catalogs:", e);
+        showError("Error", "Failed to load catalogs.");
       } finally {
         setLoadingOptions(false);
       }
     }
 
-    loadCountries();
+    loadCatalogs();
   }, [showError]);
 
   const loadStatesByCountry = useCallback(
@@ -89,6 +104,41 @@ export function useCompanyForm() {
     [showError]
   );
 
+  // Load time zones by state (and optionally city) — returns the auto-selected code if only one result
+  const loadTimeZonesByState = useCallback(
+    async (stateId: string, city?: string): Promise<string | null> => {
+      try {
+        const response = await serviceGetTimeZoneByState(stateId, city);
+        const raw = response?.data;
+
+        // API returns array directly, or could be a single object
+        let zones: any[] = [];
+        if (Array.isArray(raw)) {
+          zones = raw;
+        } else if (raw && typeof raw === "object" && raw.id && raw.code) {
+          zones = [raw];
+        }
+
+        setGlobalOptions(prev => ({
+          ...prev,
+          TIME_ZONES: zones.map((tz: any) => ({
+            label: `${tz.name} (${tz.code})`,
+            value: tz.code,
+          })),
+        }));
+
+        if (zones.length === 1) {
+          return zones[0].code;
+        }
+        return null;
+      } catch (e) {
+        console.error("Error loading time zones:", e);
+        return null;
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     if (!companyId) return;
 
@@ -101,6 +151,9 @@ export function useCompanyForm() {
 
         if (org.countryId) {
           await loadStatesByCountry(org.countryId);
+        }
+        if (org.stateId) {
+          await loadTimeZonesByState(org.stateId, org.city);
         }
 
         const parseAgreements = () => {
@@ -154,9 +207,16 @@ export function useCompanyForm() {
 
             agreements: parseAgreements(),
 
+            servicePlanIds: Array.isArray(org.servicePlanIds)
+              ? org.servicePlanIds
+              : Array.isArray(org.servicePlans)
+                ? org.servicePlans.map((sp: any) => typeof sp === "string" ? sp : sp.id)
+                : [],
+
             country: org.countryId,
             stateId: org.stateId,
             city: org.city,
+            timeZone: org.timeZone ?? "",
             address: org.address ?? "",
             zipCode: org.zipCode ?? "",
 
@@ -214,6 +274,8 @@ export function useCompanyForm() {
           taxonomyCode: data.taxonomyCode,
           logo: data.logo ? stripBase64Header(data.logo) : "",
           agreements: processAgreements(data.agreements),
+          servicePlanIds: data.servicePlanIds ?? [],
+          timeZone: data.timeZone || "",
           stateId: data.stateId,
           city: data.city,
           address: data.address ?? "",
@@ -273,6 +335,7 @@ export function useCompanyForm() {
     isSubmitting,
     globalOptions,
     loadStatesByCountry,
+    loadTimeZonesByState,
     loadingOptions,
     formInitialValues,
     loadingData,

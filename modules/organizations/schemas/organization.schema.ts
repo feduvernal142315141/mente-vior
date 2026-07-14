@@ -43,9 +43,12 @@ export const organizationCreateSchema = z.object({
 
   agreements: z.array(agreementItemSchema).optional().default([]),
 
+  servicePlanIds: z.array(z.string()).default([]),
+
   country: z.string().min(1, "Country is required"),
   stateId: z.string().min(1, "State is required"),
   city: z.string().min(1),
+  timeZone: z.string().min(1, "Time zone is required"),
   address: z.string().min(1, "Address is required"),
   zipCode: z
     .string()

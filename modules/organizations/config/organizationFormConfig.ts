@@ -25,10 +25,12 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
             logo: "",
 
             agreements: [],
+            servicePlanIds: [],
 
             country: "",
             stateId: "",
             city: "",
+            timeZone: "",
             address: "",
             zipCode: "",
             userCompany: {
@@ -82,6 +84,7 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
                     { name: "country", label: "Country", type: "select", required: true, optionsKey: "COUNTRIES" },
                     { name: "stateId", label: "State", type: "select", optionsKey: "STATES", required: true },
                     { name: "city", label: "City", type: "text", required: true },
+                    { name: "timeZone", label: "Time Zone", type: "select", optionsKey: "TIME_ZONES", required: true },
                     { name: "zipCode", label: "ZIP Code", type: "text", required: true },
                 ],
             },
@@ -102,6 +105,16 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
                 columns: 1,
                 fields: [
                     { name: "agreements", label: "Agreement Documents", type: "agreements", required: false },
+                ],
+            },
+            {
+                id: "services",
+                title: "Services",
+                description: "Select the services available for this organization",
+                columns: 1,
+                side: "left",
+                fields: [
+                    { name: "servicePlanIds", label: "Services", type: "multiselect", optionsKey: "SERVICE_PLANS" },
                 ],
             },
             {

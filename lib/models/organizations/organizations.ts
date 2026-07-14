@@ -17,6 +17,8 @@ export interface RequestCreateCompany {
   taxonomyCode: string;
   logo: string;
   agreements?: AgreementPayload[];
+  servicePlanIds?: string[];
+  timeZone?: string;
   stateId: string;
   city: string;
   address: string;
@@ -41,6 +43,11 @@ export interface AgreementItem {
   createdAt: string;
 }
 
+export interface ServicePlanItem {
+  id: string;
+  name: string;
+}
+
 export interface Organization {
   id: string;
   legalName: string;
@@ -54,6 +61,9 @@ export interface Organization {
   taxonomyCode: string;
   logo: string;
   agreements?: AgreementItem[];
+  servicePlanIds?: string[];
+  servicePlans?: ServicePlanItem[];
+  timeZone?: string | null;
   city: string;
   address: string;
   zipCode: string;

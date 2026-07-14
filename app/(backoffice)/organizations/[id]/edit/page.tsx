@@ -18,6 +18,7 @@ export default function EditOrganizationPage({ params }: { params: { id: string 
     loadingData,
     globalOptions,
     loadStatesByCountry,
+    loadTimeZonesByState,
     onSubmit,
     isSubmitting,
   } = useCompanyForm();
@@ -59,6 +60,7 @@ export default function EditOrganizationPage({ params }: { params: { id: string 
           config={{ ...config, sections: [...leftSections, ...rightSections] }}
           globalOptions={globalOptions}
           loadStatesByCountry={loadStatesByCountry}
+          loadTimeZonesByState={loadTimeZonesByState}
           onSubmit={onSubmit}
           isEditMode
         />

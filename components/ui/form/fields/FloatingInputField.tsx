@@ -12,9 +12,10 @@ interface FloatingInputProps {
     required?: boolean;
   };
   error?: string;
+  onFieldChange?: (name: string, value: any) => void;
 }
 
-export function FloatingInputField({ field, error }: FloatingInputProps) {
+export function FloatingInputField({ field, error, onFieldChange }: FloatingInputProps) {
   const { register, setValue } = useFormContext();
 
   const phoneFields = ["phoneNumber", "userCompany.phoneNumber"];
@@ -130,6 +131,11 @@ export function FloatingInputField({ field, error }: FloatingInputProps) {
           autoComplete="off"
           spellCheck={false}
           onKeyDown={handleKeyDown}
+          onBlur={(e) => {
+            if (onFieldChange) {
+              onFieldChange(field.name, e.target.value);
+            }
+          }}
           maxLength={zipCodeFields.includes(field.name) ? 5 : undefined}
           inputMode={
             phoneFields.includes(field.name) || zipCodeFields.includes(field.name)

@@ -21,3 +21,26 @@ export const serviceGetStateByCountryId = async (
         `/state/${countryId}`
     )
 }
+
+export const serviceGetServiceCatalog = async (
+    query: QueryModel,
+): ServiceResponse<CatalogListResponse> => {
+    return serviceGet<CatalogListResponse>(
+        `/service/catalog${query ? `?${getQueryString(query)}` : ''}`
+    )
+}
+
+export interface TimeZoneItem {
+    id: string
+    name: string
+    code: string
+}
+
+export const serviceGetTimeZoneByState = async (
+    stateId: string,
+    city?: string,
+): ServiceResponse<TimeZoneItem[]> => {
+    const params = new URLSearchParams({ stateId })
+    if (city?.trim()) params.set("city", city.trim())
+    return serviceGet<TimeZoneItem[]>(`/time-zone/by-state?${params.toString()}`)
+}
