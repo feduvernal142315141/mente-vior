@@ -43,7 +43,7 @@ export const organizationCreateSchema = z.object({
 
   agreements: z.array(agreementItemSchema).optional().default([]),
 
-  servicePlanIds: z.array(z.string()).default([]),
+  servicePlanIds: z.array(z.string()).min(1, "Select at least one service"),
 
   country: z.string().min(1, "Country is required"),
   stateId: z.string().min(1, "State is required"),

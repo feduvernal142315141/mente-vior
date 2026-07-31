@@ -114,7 +114,7 @@ export const organizationFormConfig = ({showStatus}: OrganizationFormConfig): Fo
                 columns: 1,
                 side: "left",
                 fields: [
-                    { name: "servicePlanIds", label: "Services", type: "multiselect", optionsKey: "SERVICE_PLANS" },
+                    { name: "servicePlanIds", label: "Services", type: "multiselect", optionsKey: "SERVICE_PLANS", required: true },
                 ],
             },
             {
