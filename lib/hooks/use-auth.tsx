@@ -13,7 +13,6 @@ import { jwtDecode } from "jwt-decode";
 import { serviceLoginManagerUserAuth, serviceRefreshToken } from "../services/login/login";
 import { encryptRsa } from "../utils/encrypt";
 import { useRefreshTokenWorker } from "./use-refresh-token-worker";
-import { useRouter } from "next/navigation";
 
 interface AuthUser {
   id: string;
@@ -38,7 +37,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   hydrated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -157,15 +156,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const router = useRouter()
-
   /**
    * Realiza el logout
    */
-  const logout = useCallback(() => {
-    router.replace("/login")
+  const logout = useCallback(async () => {
+    // Primero se limpia la sesión local; recién al final se navega. Al revés
+    // se salía de la pantalla con el estado todavía puesto.
     localStorage.removeItem("mv-auth");
-    
+
     setTokenState({
       accessToken: null,
       accessTokenExpiresAt: 0,
@@ -174,17 +172,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     setIsAuthenticated(false);
 
-    // Limpiar cookie del servidor
-    fetch("/api/auth/logout", { method: "POST" }).catch(console.error);
-    
+    // Limpiar cookie del servidor. `keepalive` para que la petición sobreviva
+    // a la navegación de abajo.
+    await fetch("/api/auth/logout", { method: "POST", keepalive: true }).catch(
+      console.error
+    );
+
+    // Navegación dura, no `router.replace`: con navegación soft el Router Cache
+    // de Next puede servir el árbol de `(backoffice)` ya renderizado y dejar la
+    // UI de la sesión anterior accesible con el botón Atrás.
+    window.location.replace("/login");
   }, []);
 
   /**
    * Callback cuando la sesión expira (notificado por el Worker)
    */
   const handleSessionExpired = useCallback(() => {
-    logout();
-    window.location.href = "/login";
+    // `logout()` ya navega a /login por su cuenta.
+    void logout();
   }, [logout]);
 
   // Ref para la función de refresh (evita problemas de dependencias circulares)

@@ -19,8 +19,7 @@ export function InterceptorsInitializer() {
       showNotification: interceptorContext.showNotification,
       handleHttpError: interceptorContext.handleHttpError,
       handleUnauthorized: interceptorContext.handleUnauthorized,
-      onActivity: () => {
-          console.log("TEST")},
+      onActivity: () => {},
     });
   }, [interceptorContext]);
 

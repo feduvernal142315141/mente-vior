@@ -1,26 +1,13 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/hooks/use-auth"
 
+/**
+ * `useAuth().logout()` ya limpia el estado local, borra la cookie del servidor
+ * y navega a /login. Este hook sólo existe para no acoplar la UI al contexto.
+ */
 export function useLogout() {
-
-  const { logout: authLogout } = useAuth()
-
-  const logout = async () => {
-    try {
-      await fetch("/api/auth/logout", { 
-        method: "POST",
-        credentials: "include",
-      })
-    } catch (error) {
-      console.error("Logout API error:", error)
-    }
-
-    
-    authLogout()
-
-  }
+  const { logout } = useAuth()
 
   return { logout }
 }
