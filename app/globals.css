@@ -4,6 +4,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Proyectos ajenos que viven en la raíz: Tailwind no debe escanearlos */
+@source not "../BLU2.0";
+@source not "../bluEmpresas";
+@source not "../landingPageMV";
+
 /* Permite variantes tipo dark usando .dark */
 @custom-variant dark (&:is(.dark *));
 
