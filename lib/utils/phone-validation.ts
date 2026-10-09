@@ -29,53 +29,30 @@ export function extractPhoneDigits(value: string): string {
   return value.replace(/\D/g, "");
 }
 
+function joinPhoneGroups(digits: string): string {
+  return [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6, 10)]
+    .filter((group) => group.length > 0)
+    .join("-");
+}
+
 export function formatPhoneInput(value: string): string {
   const digits = extractPhoneDigits(value).slice(0, PHONE_MAX_DIGITS);
 
-  if (digits.length === 0) {
-    return "";
-  }
-
-  if (digits.length <= 3) {
-    return digits;
-  }
-
-  if (digits.length <= 6) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-  }
-
   if (digits.length <= 10) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    return joinPhoneGroups(digits);
   }
 
-  return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 11)}`;
+  return `${digits.slice(0, 1)}-${joinPhoneGroups(digits.slice(1))}`;
 }
 
 export function formatPhoneDisplay(value: string): string {
   const digits = extractPhoneDigits(value).slice(0, PHONE_MAX_DIGITS);
 
-  if (digits.length === 0) {
-    return "";
-  }
-
   if (digits.length === 11 && digits.startsWith("1")) {
-    return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 11)}`;
+    return `1-${joinPhoneGroups(digits.slice(1))}`;
   }
 
-  const displayDigits = digits.slice(0, 10);
-  const areaCode = displayDigits.slice(0, 3);
-  const prefix = displayDigits.slice(3, 6);
-  const lineNumber = displayDigits.slice(6, 10);
-
-  if (displayDigits.length <= 3) {
-    return `(${areaCode}`;
-  }
-
-  if (displayDigits.length <= 6) {
-    return `(${areaCode}) ${prefix}`;
-  }
-
-  return `(${areaCode}) ${prefix}-${lineNumber}`;
+  return joinPhoneGroups(digits.slice(0, 10));
 }
 
 export function sanitizePhoneInput(value: string): string {

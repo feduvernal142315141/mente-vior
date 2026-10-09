@@ -17,10 +17,10 @@ export const organizationCreateSchema = z.object({
 
   phoneNumber: phoneNumberSchema(),
 
-  fax: z
-    .string()
-    .min(1, "Fax is required")
-    .regex(phoneFaxRegex, "Only digits and special characters, are allowed"),
+  fax: phoneNumberSchema("Fax is required", {
+    format: "Invalid fax number format",
+    length: "Fax must have 10 or 11 digits (including country code if applicable)",
+  }),
 
   webSite: z.string().optional(),
 

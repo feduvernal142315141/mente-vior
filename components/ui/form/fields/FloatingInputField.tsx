@@ -18,8 +18,8 @@ interface FloatingInputProps {
 export function FloatingInputField({ field, error, onFieldChange }: FloatingInputProps) {
   const { register, setValue } = useFormContext();
 
-  const phoneFields = ["phoneNumber", "userCompany.phoneNumber"];
-  const numericLikeFields = ["fax", "ein", "npi", "mpi"];
+  const phoneFields = ["phoneNumber", "userCompany.phoneNumber", "fax"];
+  const numericLikeFields = ["ein", "npi", "mpi"];
   const alphanumericFields = ["taxonomyCode"];
   const nameFields = ["userCompany.firstName", "userCompany.lastName"];
   const zipCodeFields = ["zipCode"]; // Only digits, exactly 5
@@ -48,7 +48,7 @@ export function FloatingInputField({ field, error, onFieldChange }: FloatingInpu
       return;
     }
 
-    // Validation for numeric-like fields (fax, ein, npi, mpi)
+    // Validation for numeric-like fields (ein, npi, mpi)
     if (numericLikeFields.includes(field.name)) {
       const allowedRegex = /^[0-9+\-() ,./\\:;_*@!?=%&#]+$/;
       if (!allowedRegex.test(e.key)) {

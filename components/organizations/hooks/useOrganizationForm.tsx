@@ -18,6 +18,7 @@ import {
 } from "@/lib/services/organizations/catalogs";
 
 import { stripBase64Header } from "@/lib/utils/format";
+import { formatPhoneInput } from "@/lib/utils/phone-validation";
 import { useAlert } from "@/lib/contexts/alert-context";
 
 export function useCompanyForm() {
@@ -196,8 +197,8 @@ export function useCompanyForm() {
         const data = {
             legalName: org.legalName,
             agencyEmail: org.agencyEmail,
-            phoneNumber: org.phoneNumber,
-            fax: org.fax,
+            phoneNumber: formatPhoneInput(org.phoneNumber ?? ""),
+            fax: formatPhoneInput(org.fax ?? ""),
             webSite: org.webSite ?? "",
             ein: org.ein,
             npi: org.npi,
@@ -229,7 +230,7 @@ export function useCompanyForm() {
                 firstName: org.userCompany?.firstName ?? "",
                 lastName: org.userCompany?.lastName ?? "",
                 email: org.userCompany?.email ?? "",
-                phoneNumber: org.userCompany?.phoneNumber ?? "",
+                phoneNumber: formatPhoneInput(org.userCompany?.phoneNumber ?? ""),
             },
         }
 
